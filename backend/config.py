@@ -20,8 +20,8 @@ class Settings:
     gemini_vision_model: str = os.getenv("GEMINI_VISION_MODEL", "gemini-3.6-flash")
     gemini_tts_model: str = os.getenv("GEMINI_TTS_MODEL", "gemini-2.5-flash-preview-tts")
     host: str = os.getenv("HOST", "127.0.0.1")
-    port: int = int(os.getenv("PORT", "8000"))
-    max_upload_bytes: int = int(os.getenv("MAX_UPLOAD_MB", "10")) * 1024 * 1024
+    port: int = int(os.getenv("PORT") or "8000")
+    max_upload_bytes: int = int(os.getenv("MAX_UPLOAD_MB") or "10") * 1024 * 1024
     cors_origins: tuple[str, ...] = tuple(
         origin.strip()
         for origin in os.getenv("CORS_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000").split(",")
