@@ -1,6 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/static/:match*", "destination": "/frontend/:match*" },
-    { "source": "/(.*)", "destination": "/api/index.py" }
-  ]
-}
