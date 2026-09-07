@@ -1,49 +1,29 @@
-from fastapi import FastAPI
+import sys
+import traceback
+from pathlib import Path
 
-app = FastAPI()
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 
-
-@app.get("/")
-def root():
-    return {"status": "FasalDoc function is running", "python": "ok"}
-
-
-@app.get("/api/health")
-def health():
-    return {"status": "ok"}
-
-
-@app.get("/api/test-import")
-def test_import():
-    errors = {}
+for subdir in ("storage", "storage/uploads", "storage/audio"):
     try:
-        from backend.config import settings
-        errors["config"] = "ok"
-    except Exception as e:
-        errors["config"] = str(e)
+        (ROOT / subdir).mkdir(parents=True, exist_ok=True)
+    except OSError:
+        pass
 
-    try:
-        from backend.database import init_db
-        errors["database"] = "ok"
-    except Exception as e:
-        errors["database"] = str(e)
+try:
+    from backend.main import app
+except Exception:
+    from fastapi import FastAPI
+    from fastapi.responses import PlainTextResponse
 
-    try:
-        from backend.ai import get_provider
-        errors["ai"] = "ok"
-    except Exception as e:
-        errors["ai"] = str(e)
+    app = FastAPI()
+    _tb = traceback.format_exc()
 
-    try:
-        from backend.routes.diagnose import router
-        errors["diagnose"] = "ok"
-    except Exception as e:
-        errors["diagnose"] = str(e)
-
-    try:
-        from backend.main import app as main_app
-        errors["main"] = "ok"
-    except Exception as e:
-        errors["main"] = str(e)
-
-    return errors
+    @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
+    @app.get("/")
+    async def debug_error(path: str = "") -> PlainTextResponse:
+        return PlainTextResponse(
+            f"FasalDoc failed to start:\n\n{_tb}",
+            status_code=500,
+        )
