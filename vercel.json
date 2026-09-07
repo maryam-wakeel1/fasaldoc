@@ -1,7 +1,7 @@
 {
+  "outputDirectory": "frontend",
   "rewrites": [
-    { "source": "/static/(.*)", "destination": "/frontend/$1" },
-    { "source": "/api/(.*)", "destination": "/api/index.py" },
-    { "source": "/", "destination": "/frontend/index.html" }
+    { "source": "/static/(.*)", "destination": "/$1" },
+    { "source": "/api/(.*)", "destination": "/api/index.py" }
   ]
 }
