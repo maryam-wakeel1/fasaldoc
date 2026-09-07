@@ -53,8 +53,10 @@ app.add_middleware(
 
 app.include_router(diagnose_router)
 app.include_router(history_router)
-app.mount("/static", StaticFiles(directory=settings.frontend_dir), name="static")
-app.mount("/media", StaticFiles(directory=settings.storage_dir), name="media")
+if settings.frontend_dir.is_dir():
+    app.mount("/static", StaticFiles(directory=settings.frontend_dir), name="static")
+if settings.storage_dir.is_dir():
+    app.mount("/media", StaticFiles(directory=settings.storage_dir), name="media")
 
 
 @app.get("/api/health")
