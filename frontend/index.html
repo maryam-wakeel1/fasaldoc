@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#175b38" />
+    <title data-i18n="title">FasalDoc | فصل ڈاکٹر</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="brand" aria-label="فصل ڈاکٹر" data-i18n-attr="aria-label:brandAria">
+        <div class="brand-mark" aria-hidden="true"><i class="fa-solid fa-seedling"></i></div>
+        <div>
+          <p class="eyebrow" data-i18n="eyebrow">آپ کی فصل، آپ کی زبان</p>
+          <h1>FasalDoc <span data-i18n="brandSubtitle">(فصل ڈاکٹر)</span></h1>
+          <p class="tagline" data-i18n="tagline">اپنی فصل کی آواز میں بات کریں</p>
+        </div>
+        <button id="langToggle" class="lang-toggle" type="button" data-i18n="langToggle">EN / اردو</button>
+      </header>
+
+      <section class="intro-card" aria-labelledby="intro-title">
+        <span class="step-number">1</span>
+        <div>
+          <h2 id="intro-title" data-i18n="introTitle">پتے کی تصویر لیں</h2>
+          <p data-i18n="introHint">صاف روشنی میں متاثرہ پتا قریب سے دکھائیں۔</p>
+        </div>
+      </section>
+
+      <form id="diagnosisForm" novalidate>
+        <section class="capture-grid" aria-label="تصویر اور آواز" data-i18n-attr="aria-label:captureAria">
+          <label class="action-button camera-button" for="cameraInput">
+            <span class="action-icon" aria-hidden="true"><i class="fa-solid fa-camera"></i></span>
+            <strong data-i18n="cameraLabel">تصویر لیں</strong>
+            <small data-i18n="cameraHint">کیمرہ کھولیں</small>
+          </label>
+          <input id="cameraInput" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden />
+
+          <button id="micButton" class="action-button mic-button" type="button" aria-pressed="false">
+            <span class="action-icon" aria-hidden="true"><i class="fa-solid fa-microphone"></i></span>
+            <strong id="micLabel" data-i18n="micLabel">آواز ریکارڈ کریں</strong>
+            <small id="micHint" data-i18n="micHint">اپنا سوال بولیں</small>
+          </button>
+        </section>
+
+        <div id="recordingStatus" class="recording-status" hidden role="status">
+          <span class="recording-dot" aria-hidden="true"></span>
+          <span data-i18n="recordingStatus">آواز ریکارڈ ہو رہی ہے — مکمل ہونے پر مائیک دبائیں</span>
+        </div>
+
+        <section class="preview-card" aria-label="منتخب تصویر" data-i18n-attr="aria-label:previewAria">
+          <div id="imageEmpty" class="preview-empty">
+            <span aria-hidden="true"><i class="fa-solid fa-leaf"></i></span>
+            <p data-i18n="previewEmpty">ابھی تصویر منتخب نہیں ہوئی</p>
+          </div>
+          <img id="imagePreview" alt="منتخب فصل کے پتے کی تصویر" data-i18n-attr="alt:previewAlt" hidden />
+          <p id="imageName" class="image-name" hidden></p>
+        </section>
+
+        <label class="question-field" for="textQuestion">
+          <span data-i18n="questionLabel">لکھ کر بھی پوچھ سکتے ہیں (اختیاری)</span>
+          <textarea id="textQuestion" name="text_question" rows="2" placeholder="مثلاً: پتے پیلے کیوں ہیں؟" data-i18n-attr="placeholder:questionPlaceholder"></textarea>
+        </label>
+
+        <button id="analyzeButton" class="analyze-button" type="submit" disabled>
+          <span aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <span data-i18n="analyzeButton">تشخیص کریں</span>
+        </button>
+      </form>
+
+      <p id="statusMessage" class="status-message" aria-live="polite"></p>
+
+      <section id="resultsCard" class="results-card" hidden aria-live="polite">
+        <div id="demoBanner" class="demo-banner" hidden>
+          <span aria-hidden="true">!</span>
+          <span data-i18n="demoBanner">یہ صرف نمونہ ہے — اصل تشخیص نہیں</span>
+        </div>
+
+        <div class="result-heading">
+          <span class="result-icon" aria-hidden="true"><i class="fa-solid fa-wheat-awn"></i></span>
+          <div>
+            <p data-i18n="resultHeading">ممکنہ مسئلہ</p>
+            <h2 id="diagnosisText"></h2>
+          </div>
+        </div>
+
+        <div class="confidence-section">
+          <div class="confidence-label">
+            <span data-i18n="confidenceLabel">یقین کی سطح</span>
+            <strong id="confidenceText"></strong>
+          </div>
+          <div class="confidence-track" aria-label="یقین کی سطح" data-i18n-attr="aria-label:confidenceTrack">
+            <div id="confidenceFill" class="confidence-fill"></div>
+          </div>
+        </div>
+
+        <div class="result-block">
+          <h3 data-i18n="symptomsHeading">پتے پر کیا نظر آیا</h3>
+          <p id="symptomsText"></p>
+        </div>
+        <div class="result-block treatment-block">
+          <h3 data-i18n="treatmentHeading">سادہ رہنمائی</h3>
+          <p id="treatmentText"></p>
+        </div>
+
+        <section id="referenceGallery" class="reference-gallery" hidden aria-labelledby="referenceTitle">
+          <h3 id="referenceTitle" data-i18n="referenceTitle">ملتی جلتی حوالہ جاتی تصویریں</h3>
+          <p data-i18n="referenceHint">یہ مثالیں ہیں؛ اپنے کھیت کی حالت کے لیے مقامی ماہر سے تصدیق کریں۔</p>
+          <div id="referenceStrip" class="reference-strip"></div>
+        </section>
+
+        <div id="uncertaintyWarning" class="warning-banner" hidden>
+          <strong data-i18n="warningTitle">قریبی زرعی ماہر سے تصدیق کریں</strong>
+          <span data-i18n="warningText">تصویر سے پوری طرح یقین نہیں ہو سکا۔</span>
+        </div>
+
+        <div class="audio-section">
+          <p data-i18n="audioSection">جواب سنیں</p>
+          <audio id="resultAudio" preload="auto" controls hidden></audio>
+          <button id="playAudioButton" class="play-audio-button" type="button" hidden>
+            <span aria-hidden="true"><i class="fa-solid fa-volume-high"></i></span>
+            <span data-i18n="playAudio">جواب سنیں</span>
+          </button>
+          <p id="audioNote" class="audio-note"></p>
+        </div>
+
+        <button id="newDiagnosisButton" class="secondary-button" type="button">
+          <span aria-hidden="true"><i class="fa-solid fa-camera-rotate"></i></span>
+          <span data-i18n="newDiagnosis">نئی تصویر لیں</span>
+        </button>
+      </section>
+    </main>
+
+    <script src="/static/js/app.js"></script>
+  </body>
+</html>
