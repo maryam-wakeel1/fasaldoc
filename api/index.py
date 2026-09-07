@@ -1,42 +1,49 @@
-import sys
-import traceback
-from pathlib import Path
+from fastapi import FastAPI
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
+app = FastAPI()
 
-for subdir in ("storage", "storage/uploads", "storage/audio"):
+
+@app.get("/")
+def root():
+    return {"status": "FasalDoc function is running", "python": "ok"}
+
+
+@app.get("/api/health")
+def health():
+    return {"status": "ok"}
+
+
+@app.get("/api/test-import")
+def test_import():
+    errors = {}
     try:
-        (ROOT / subdir).mkdir(parents=True, exist_ok=True)
-    except OSError:
-        pass
+        from backend.config import settings
+        errors["config"] = "ok"
+    except Exception as e:
+        errors["config"] = str(e)
 
-try:
-    from backend.main import app
-except Exception:
-    from fastapi import FastAPI
-    from fastapi.responses import PlainTextResponse
+    try:
+        from backend.database import init_db
+        errors["database"] = "ok"
+    except Exception as e:
+        errors["database"] = str(e)
 
-    app = FastAPI()
-    _tb = traceback.format_exc()
+    try:
+        from backend.ai import get_provider
+        errors["ai"] = "ok"
+    except Exception as e:
+        errors["ai"] = str(e)
 
-    @app.get("/")
-    async def debug_root() -> PlainTextResponse:
-        return PlainTextResponse(
-            f"FasalDoc failed to start:\n\n{_tb}",
-            status_code=500,
-        )
+    try:
+        from backend.routes.diagnose import router
+        errors["diagnose"] = "ok"
+    except Exception as e:
+        errors["diagnose"] = str(e)
 
-    @app.get("/api/health")
-    async def debug_health() -> PlainTextResponse:
-        return PlainTextResponse(
-            f"FasalDoc failed to start:\n\n{_tb}",
-            status_code=500,
-        )
+    try:
+        from backend.main import app as main_app
+        errors["main"] = "ok"
+    except Exception as e:
+        errors["main"] = str(e)
 
-    @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
-    async def debug_catch_all(path: str = "") -> PlainTextResponse:
-        return PlainTextResponse(
-            f"FasalDoc failed to start:\n\n{_tb}",
-            status_code=500,
-        )
+    return errors
