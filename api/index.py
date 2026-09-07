@@ -18,14 +18,25 @@ except Exception:
     from fastapi.responses import PlainTextResponse
 
     app = FastAPI()
-
     _tb = traceback.format_exc()
 
-    @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
     @app.get("/")
-    async def debug_error(path: str = "") -> PlainTextResponse:
+    async def debug_root() -> PlainTextResponse:
         return PlainTextResponse(
             f"FasalDoc failed to start:\n\n{_tb}",
             status_code=500,
         )
-# trigger redeploy
+
+    @app.get("/api/health")
+    async def debug_health() -> PlainTextResponse:
+        return PlainTextResponse(
+            f"FasalDoc failed to start:\n\n{_tb}",
+            status_code=500,
+        )
+
+    @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
+    async def debug_catch_all(path: str = "") -> PlainTextResponse:
+        return PlainTextResponse(
+            f"FasalDoc failed to start:\n\n{_tb}",
+            status_code=500,
+        )
