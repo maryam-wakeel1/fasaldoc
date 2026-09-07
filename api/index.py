@@ -28,3 +28,4 @@ except Exception:
             f"FasalDoc failed to start:\n\n{_tb}",
             status_code=500,
         )
+# trigger redeploy
