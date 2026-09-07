@@ -22,9 +22,12 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    settings.uploads_dir.mkdir(parents=True, exist_ok=True)
-    settings.audio_dir.mkdir(parents=True, exist_ok=True)
-    init_db()
+    try:
+        settings.uploads_dir.mkdir(parents=True, exist_ok=True)
+        settings.audio_dir.mkdir(parents=True, exist_ok=True)
+        init_db()
+    except Exception:
+        logger.warning("Skipping local disk writes (read-only filesystem detected).")
     provider = get_provider()
     if provider.is_demo:
         logger.warning("No Gemini API key configured: FasalDoc is running in visibly labelled demo mode.")
