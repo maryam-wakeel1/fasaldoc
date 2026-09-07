@@ -1,9 +1,6 @@
 {
+  "outputDirectory": "frontend",
   "rewrites": [
-    { "source": "/js/(.*)", "destination": "/frontend/js/$1" },
-    { "source": "/css/(.*)", "destination": "/frontend/css/$1" },
-    { "source": "/assets/(.*)", "destination": "/frontend/assets/$1" },
-    { "source": "/api/(.*)", "destination": "/api/index.py" },
-    { "source": "/", "destination": "/frontend/index.html" }
+    { "source": "/api/(.*)", "destination": "/api/index.py" }
   ]
 }
